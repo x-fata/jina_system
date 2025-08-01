@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <title>BizKazi  Admin</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('/static/bg.avif') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .overlay {
+      background-color: rgba(0, 119, 182, 0.75); /* Bahari blue */
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 20px rgba(0,0,0,0.3);
+      width: 350px;
+      text-align: center;
+    }
+    .login-box h2 {
+      margin-bottom: 20px;
+      color: #0077b6;
+    }
+    .login-box input[type="text"],
+    .login-box input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .login-box button {
+      background-color: #0077b6;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .login-box button:hover {
+      background-color: #005f87;
+    }
+    .note {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #444;
+    }
+    .error {
+      color: red;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="login-box">
+      <h2>Karibu Admin</h2>
+      <p class="note">Tafadhali tumia jina lako binafsi na password ya pamoja ya mfumo.</p>
+      {% if error %}
+        <div class="error">{{ error }}</div>
+      {% endif %}
+      <form method="POST">
+        <input type="text" name="jina" placeholder="Jina la Admin" required>
+        <input type="password" name="password" placeholder="Password ya Mfumo" required>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

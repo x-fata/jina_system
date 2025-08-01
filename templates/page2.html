@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Page 2 - BizKazi</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #e0f0f8; /* rangi ya bahari hafifu */
+      color: #03396c; /* navy blue */
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar kushoto */
+    .sidebar {
+      width: 220px;
+      background-color: #045a8d; /* navy blue */
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Buttons za sidebar */
+    .sidebar button {
+      background-color: #0288d1; /* blue */
+      border: none;
+      color: white;
+      padding: 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+      transition: background-color 0.3s ease;
+      text-align: center;
+    }
+    .sidebar button:hover {
+      background-color: #016799;
+    }
+
+    /* Main content kulia */
+    .main-content {
+      flex-grow: 1;
+      padding: 25px;
+      overflow-y: auto;
+    }
+
+    /* Title */
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #045a8d;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tr:hover {
+      background-color: #f1f9ff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <button onclick="location.href='#add-product'">Ongeza Bidhaa Mpya</button>
+    <button onclick="location.href='#sold-products'">Bidhaa Iliyotoka/Kuuza</button>
+    <button onclick="location.href='#statistics'">Takwimu</button>
+  </div>
+
+  <div class="main-content">
+    <h1>Historia ya Matendo ya Admin</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Jina la Admin</th>
+          <th>Kitendo</th>
+          <th>Muda wa Kitendo</th>
+          <th>Aliyefanya</th>
+          <th>Alifuta</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for activity in activities %}
+        <tr>
+          <td>{{ activity.jina }}</td>
+          <td>{{ activity.action }}</td>
+          <td>{{ activity.timestamp }}</td>
+          <td>{{ activity.added }}</td>
+          <td>{{ activity.removed }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

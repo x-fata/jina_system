@@ -1,97 +1,91 @@
-from flask import Flask, request, render_template_string
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, redirect, session
+import psycopg2
+from datetime import datetime
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
+app.secret_key = 'bizkazi_secret_key'
 
-# PostgreSQL connection settings
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://jina_db_user:295a2tHLmhTeHFjTI4AxznPHmRMKJptc@dpg-d265eimuk2gs73bhvjcg-a.oregon-postgres.render.com:5432/jina_db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Function ya ku-connect database (inaitwa kila request)
+def get_db_connection():
+    conn = psycopg2.connect(
+        host="dpg-d265eimuk2gs73bhvjcg-a.oregon-postgres.render.com",
+        database="jina_db",
+        user="jina_db_user",
+        password="295a2tHLmhTeHFjTI4AxznPHmRMKJptc"
+    )
+    return conn
 
-# Initialize database
-db = SQLAlchemy(app)
-
-# Model ya Jina
-class Jina(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    jina = db.Column(db.String(100), nullable=False)
-
-# Kuunda tables
-with app.app_context():
-    db.create_all()
-
-# Route ya form
 @app.route('/', methods=['GET', 'POST'])
-def home():
-    message = ''
+def login():
+    error = None
     if request.method == 'POST':
-        jina_input = request.form.get('jina')
-        if jina_input:
-            jina_obj = Jina(jina=jina_input)
-            db.session.add(jina_obj)
-            db.session.commit()
-            message = f'Jina "{jina_input}" limehifadhiwa kikamilifu!'
-        else:
-            message = 'Tafadhali ingiza jina.'
+        jina = request.form['jina']
+        password = request.form['password']
 
-    form_html = '''
-    <html>
-    <head>
-      <title>Ingiza Jina</title>
-      <style>
-        body {
-          background-color: #f0f0f0;
-          font-family: Arial, sans-serif;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-          margin: 0;
-        }
-        .container {
-          background-color: white;
-          padding: 40px;
-          border-radius: 12px;
-          box-shadow: 0 0 10px rgba(0,0,0,0.1);
-          text-align: center;
-        }
-        input[type="text"] {
-          padding: 10px;
-          width: 250px;
-          font-size: 16px;
-          margin-bottom: 15px;
-        }
-        button {
-          padding: 10px 20px;
-          font-size: 16px;
-          background-color: gray;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-        }
-        button:hover {
-          background-color: darkgray;
-        }
-        p {
-          margin-top: 20px;
-          color: green;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <h2>Ingiza Jina</h2>
-        <form method="POST">
-          <input type="text" name="jina" placeholder="Andika jina hapa" required><br>
-          <button type="submit">Hifadhi</button>
-        </form>
-        <p>{{ message }}</p>
-      </div>
-    </body>
-    </html>
-    '''
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
 
-    return render_template_string(form_html, message=message)
+            cursor.execute("SELECT * FROM admins WHERE jina = %s", (jina,))
+            admin = cursor.fetchone()
+
+            if admin and check_password_hash(admin[2], password):  # password_hash iko index 2
+                session['admin'] = jina
+                login_time = datetime.now()
+                cursor.execute(
+                    "INSERT INTO activities (jina, action, timestamp) VALUES (%s, %s, %s)",
+                    (jina, 'login', login_time)
+                )
+                conn.commit()
+                return redirect('/page2')
+            else:
+                error = 'Jina au Password si sahihi.'
+
+        except Exception as e:
+            error = f"Kuna tatizo: {e}"
+
+        finally:
+            cursor.close()
+            conn.close()
+
+    return render_template('login.html', error=error)
+
+@app.route('/page2')
+def page2():
+    if 'admin' not in session:
+        return redirect('/')
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Hapa tunaondoa 'added' na 'removed' mpaka zitakapokuwa tayari kwenye DB
+        cursor.execute("""
+            SELECT jina, action, timestamp
+            FROM activities
+            ORDER BY timestamp DESC
+        """)
+        rows = cursor.fetchall()
+
+        activities = []
+        for row in rows:
+            activities.append({
+                'jina': row[0],
+                'action': row[1],
+                'timestamp': row[2].strftime("%Y-%m-%d %H:%M:%S"),
+                'added': '',    # Bado data hizi hazipo, tutaongeza baadaye
+                'removed': ''   # Bado data hizi hazipo, tutaongeza baadaye
+            })
+
+    except Exception as e:
+        return f"Kuna tatizo: {e}"
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('page2.html', activities=activities)
 
 if __name__ == '__main__':
     app.run(debug=True)
