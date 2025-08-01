@@ -1,34 +1,38 @@
 from flask import Flask, request, render_template_string
-import sqlite3
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# Kuunda database na table kama haipo
-def init_db():
-    conn = sqlite3.connect('jina.db')
-    c = conn.cursor()
-    c.execute('CREATE TABLE IF NOT EXISTS majina (id INTEGER PRIMARY KEY AUTOINCREMENT, jina TEXT NOT NULL)')
-    conn.commit()
-    conn.close()
+# PostgreSQL connection settings
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://jina_db_user:295a2tHLmhTeHFjTI4AxznPHmRMKJptc@dpg-d265eimuk2gs73bhvjcg-a.oregon-postgres.render.com:5432/jina_db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-init_db()
+# Initialize database
+db = SQLAlchemy(app)
 
-# Route ya kuonyesha form na kupokea jina
+# Model ya Jina
+class Jina(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jina = db.Column(db.String(100), nullable=False)
+
+# Kuunda tables
+with app.app_context():
+    db.create_all()
+
+# Route ya form
 @app.route('/', methods=['GET', 'POST'])
 def home():
     message = ''
     if request.method == 'POST':
-        jina = request.form.get('jina')
-        if jina:
-            conn = sqlite3.connect('jina.db')
-            c = conn.cursor()
-            c.execute('INSERT INTO majina (jina) VALUES (?)', (jina,))
-            conn.commit()
-            conn.close()
-            message = f'Jina "{jina}" limehifadhiwa kikamilifu!'
+        jina_input = request.form.get('jina')
+        if jina_input:
+            jina_obj = Jina(jina=jina_input)
+            db.session.add(jina_obj)
+            db.session.commit()
+            message = f'Jina "{jina_input}" limehifadhiwa kikamilifu!'
         else:
             message = 'Tafadhali ingiza jina.'
-    
+
     form_html = '''
     <html>
     <head>
