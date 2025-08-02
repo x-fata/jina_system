@@ -120,12 +120,14 @@ def add_product():
                 cursor.close()
                 conn.close()
 
-    # Fetch products
+    # Fetch products - NEWEST FIRST
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT jina, thamani, idadi, added_by, added_at FROM products ORDER BY added_at DESC
+            SELECT jina, thamani, idadi, added_by, added_at
+            FROM products
+            ORDER BY added_at DESC
         """)
         rows = cursor.fetchall()
 
@@ -159,7 +161,11 @@ def information():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT jina, thamani, idadi, added_by, added_at FROM products ORDER BY added_at DESC")
+        cursor.execute("""
+            SELECT jina, thamani, idadi, added_by, added_at
+            FROM products
+            ORDER BY added_at DESC
+        """)
         rows = cursor.fetchall()
 
         for row in rows:
@@ -171,7 +177,6 @@ def information():
                 'added_at': row[4].strftime("%Y-%m-%d %H:%M:%S")
             })
 
-        # Jumlisha thamani zote
         cursor.execute("SELECT SUM(thamani) FROM products")
         result = cursor.fetchone()
         total_thamani = result[0] if result[0] else 0.0
