@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ongeza Bidhaa Mpya</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e0f7fa;
+      margin: 0;
+      padding: 0;
+      color: #03396c;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      position: relative;
+    }
+
+    .reload-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #0288d1;
+    }
+
+    h2 {
+      color: #045a8d;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .form-top {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1.5px solid #ccc;
+      transition: border-color 0.3s ease;
+      flex: 1;
+    }
+
+    input[name="jina"] {
+      flex: 2;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #0288d1;
+      box-shadow: 0 0 8px rgba(2, 136, 209, 0.4);
+    }
+
+    .form-bottom {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    button {
+      background-color: #0288d1;
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      font-size: 17px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(2,136,209,0.6);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #016799;
+      box-shadow: 0 6px 12px rgba(1,103,153,0.8);
+    }
+
+    h3 {
+      border-bottom: 2px solid #045a8d;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #045a8d;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tr:hover {
+      background-color: #f1f9ff;
+    }
+
+    .message {
+      text-align: center;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .error {
+      background-color: #fce4e4;
+      color: #d32f2f;
+      border: 1.5px solid #d32f2f;
+    }
+
+    .success {
+      background-color: #dff0d8;
+      color: #388e3c;
+      border: 1.5px solid #388e3c;
+    }
+
+    @media (max-width: 768px) {
+      .form-top {
+        flex-direction: column;
+      }
+
+      .form-bottom {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <button class="reload-btn" onclick="location.reload()" title="Reload">🔄</button>
+    <h2>Ongeza Bidhaa Mpya</h2>
+
+    {% if error %}
+      <div class="message error" id="msg">{{ error }}</div>
+    {% endif %}
+    {% if success %}
+      <div class="message success" id="msg">{{ success }}</div>
+    {% endif %}
+
+    <form method="POST" novalidate>
+      <div class="form-top">
+        <input type="text" name="jina" placeholder="Jina la Bidhaa" required />
+        <input type="number" step="0.01" name="thamani" placeholder="Thamani (Tsh)" required />
+        <input type="number" name="idadi" placeholder="Idadi" required />
+      </div>
+      <div class="form-bottom">
+        <button type="submit">Ongeza Bidhaa</button>
+      </div>
+    </form>
+
+    <h3>Bidhaa Zilizoongezwa</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Jina</th>
+          <th>Thamani</th>
+          <th>Idadi</th>
+          <th>Aliyeongeza</th>
+          <th>Wakati</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+          <tr>
+            <td>{{ product.jina }}</td>
+            <td>{{ product.thamani }}</td>
+            <td>{{ product.idadi }}</td>
+            <td>{{ product.added_by }}</td>
+            <td>{{ product.added_at }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const msg = document.getElementById("msg");
+    if (msg) {
+      setTimeout(() => {
+        window.location.href = window.location.href.split("?")[0];
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

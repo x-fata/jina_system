@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #e0f0f8; /* rangi ya bahari hafifu */
+      background-color: #e0f0f8;
       color: #03396c;
       display: flex;
       flex-direction: column;
@@ -22,7 +22,6 @@
       height: 100%;
     }
 
-    /* Sidebar kushoto */
     .sidebar {
       width: 220px;
       background-color: #045a8d;
@@ -48,7 +47,16 @@
       background-color: #e0f7ff;
     }
 
-    /* Main content kulia */
+    .sidebar .restricted-btn {
+      background-color: #ffebee;
+      color: #d32f2f;
+      border: 2px solid #d32f2f;
+    }
+
+    .sidebar .restricted-btn:hover {
+      background-color: #ffcdd2;
+    }
+
     .main-content {
       flex-grow: 1;
       padding: 25px;
@@ -87,7 +95,6 @@
       background-color: #f1f9ff;
     }
 
-    /* Responsive adjustments */
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -126,9 +133,9 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <button onclick="location.href='#add-product'">Ongeza Bidhaa Mpya</button>
-      <button onclick="location.href='#sold-products'">Bidhaa Iliyotoka/Kuuza</button>
-      <button onclick="location.href='#statistics'">Takwimu</button>
+      <button onclick="location.href='{{ url_for('add_product') }}'">Bidhaa</button>
+      <button onclick="location.href='{{ url_for('information') }}'">Information</button>
+      <button class="restricted-btn" onclick="location.href='/statistics'">Restricted</button>
     </div>
 
     <!-- Main content -->
@@ -141,8 +148,6 @@
             <th>Jina la Admin</th>
             <th>Kitendo</th>
             <th>Muda wa Kitendo</th>
-            <th>Aliyoongeza</th>
-            <th>Aliyofuta</th>
           </tr>
         </thead>
         <tbody>
@@ -151,8 +156,6 @@
             <td>{{ activity.jina }}</td>
             <td>{{ activity.action }}</td>
             <td>{{ activity.timestamp }}</td>
-            <td>{{ activity.added }}</td>
-            <td>{{ activity.removed }}</td>
           </tr>
           {% endfor %}
         </tbody>
