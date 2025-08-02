@@ -62,8 +62,14 @@ def page2():
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
+
         cursor.execute("SELECT jina, action, timestamp FROM activities ORDER BY timestamp DESC")
         rows = cursor.fetchall()
+
+        # Idadi ya admins (debug)
+        cursor.execute("SELECT COUNT(*) FROM admins")
+        admin_count = cursor.fetchone()[0]
+        print(f"✅ Jumla ya Admins waliopo: {admin_count}")
 
         activities = []
         for row in rows:
