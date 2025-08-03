@@ -11,15 +11,7 @@
       background-color: #e0f0f8;
       color: #03396c;
       display: flex;
-      flex-direction: column;
       min-height: 100vh;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: row;
-      flex-grow: 1;
-      height: 100%;
     }
 
     .sidebar {
@@ -29,12 +21,14 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
+      position: fixed;
+      height: 100vh;
     }
 
     .sidebar button {
       background-color: white;
-      color: #045a8d;
-      border: 2px solid #045a8d;
+      color: #0288d1;
+      border: 2px solid #0288d1;
       padding: 12px;
       font-size: 16px;
       border-radius: 8px;
@@ -58,9 +52,10 @@
     }
 
     .main-content {
-      flex-grow: 1;
+      margin-left: 240px;
       padding: 25px;
       overflow-x: auto;
+      flex-grow: 1;
     }
 
     h1 {
@@ -96,14 +91,21 @@
     }
 
     @media (max-width: 768px) {
-      .container {
+      body {
         flex-direction: column;
       }
 
       .sidebar {
         width: 100%;
+        height: auto;
         flex-direction: row;
         justify-content: space-around;
+        position: relative;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 10px;
       }
 
       .sidebar button {
@@ -111,57 +113,38 @@
         font-size: 14px;
         padding: 10px;
       }
-
-      .main-content {
-        padding: 10px;
-      }
-
-      table, th, td {
-        font-size: 12px;
-      }
-
-      h1 {
-        font-size: 18px;
-        text-align: center;
-      }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <div class="sidebar">
+    <button onclick="location.href='{{ url_for('add_product') }}'">Bidhaa</button>
+    <button onclick="location.href='{{ url_for('information') }}'">Information</button>
+    <button class="restricted-btn" onclick="location.href='{{ url_for('restricted') }}'">Restricted</button>
+  </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <button onclick="location.href='{{ url_for('add_product') }}'">Bidhaa</button>
-      <button onclick="location.href='{{ url_for('information') }}'">Information</button>
-      <button class="restricted-btn" onclick="location.href='/statistics'">Restricted</button>
-    </div>
+  <div class="main-content">
+    <h1>Historia ya Matendo ya Admin</h1>
 
-    <!-- Main content -->
-    <div class="main-content">
-      <h1>Historia ya Matendo ya Admin</h1>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Jina la Admin</th>
-            <th>Kitendo</th>
-            <th>Muda wa Kitendo</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for activity in activities %}
-          <tr>
-            <td>{{ activity.jina }}</td>
-            <td>{{ activity.action }}</td>
-            <td>{{ activity.timestamp }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
+    <table>
+      <thead>
+        <tr>
+          <th>Jina la Admin</th>
+          <th>Kitendo</th>
+          <th>Muda wa Kitendo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for activity in activities %}
+        <tr>
+          <td>{{ activity.jina }}</td>
+          <td>{{ activity.action }}</td>
+          <td>{{ activity.timestamp }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 
 </body>

@@ -2,7 +2,10 @@
 <html lang="sw">
 <head>
   <meta charset="UTF-8">
-  <title>BizKazi  Admin</title>
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>BizKazi Admin</title>
   <style>
     body {
       margin: 0;
@@ -12,7 +15,7 @@
       font-family: 'Segoe UI', sans-serif;
     }
     .overlay {
-      background-color: rgba(0, 119, 182, 0.75); /* Bahari blue */
+      background-color: rgba(0, 119, 182, 0.75);
       height: 100vh;
       display: flex;
       justify-content: center;
@@ -71,12 +74,22 @@
       {% if error %}
         <div class="error">{{ error }}</div>
       {% endif %}
-      <form method="POST">
-        <input type="text" name="jina" placeholder="Jina la Admin" required>
-        <input type="password" name="password" placeholder="Password ya Mfumo" required>
+      <form method="POST" autocomplete="off" novalidate id="loginForm">
+        <input type="text" name="jina" placeholder="Jina la Admin" required autocomplete="off" autofocus>
+        <input type="password" name="password" placeholder="Password ya Mfumo" required autocomplete="new-password">
         <button type="submit">Login</button>
       </form>
     </div>
   </div>
+
+  <script>
+    // Weka inputs zote wazi kila wakati ukurasa unapopakuliwa
+    window.addEventListener('load', () => {
+      const form = document.getElementById('loginForm');
+      if (form) {
+        form.reset(); // futa maudhui yote ya input fields
+      }
+    });
+  </script>
 </body>
 </html>

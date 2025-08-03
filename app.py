@@ -62,14 +62,8 @@ def page2():
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-
         cursor.execute("SELECT jina, action, timestamp FROM activities ORDER BY timestamp DESC")
         rows = cursor.fetchall()
-
-        # Idadi ya admins (debug)
-        cursor.execute("SELECT COUNT(*) FROM admins")
-        admin_count = cursor.fetchone()[0]
-        print(f"✅ Jumla ya Admins waliopo: {admin_count}")
 
         activities = []
         for row in rows:
@@ -194,6 +188,13 @@ def information():
         conn.close()
 
     return render_template('information.html', products=products, total_thamani=total_thamani, error=error)
+
+# === RESTRICTED ROUTE ===
+@app.route('/restricted')
+def restricted():
+    if 'admin' not in session:
+        return redirect('/')
+    return render_template('restricted.html')
 
 # === RUN APP ===
 if __name__ == '__main__':

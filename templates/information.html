@@ -9,6 +9,53 @@
       background-color: #f2f9ff;
       padding: 20px;
       color: #03396c;
+      display: flex;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #045a8d;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: fixed;
+      height: 100vh;
+    }
+
+    .sidebar button {
+      background-color: white;
+      color: #0288d1;
+      border: 2px solid #0288d1;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .sidebar button:hover {
+      background-color: #e0f7ff;
+    }
+
+    .sidebar .restricted-btn {
+      background-color: #ffebee;
+      color: #d32f2f;
+      border: 2px solid #d32f2f;
+    }
+
+    .sidebar .restricted-btn:hover {
+      background-color: #ffcdd2;
+    }
+
+    .main-content {
+      margin-left: 240px;
+      padding: 20px;
+      flex-grow: 1;
     }
 
     h2 {
@@ -110,43 +157,51 @@
 </head>
 <body>
 
-  <h2>Taarifa za Bidhaa (Information)</h2>
-
-  <div class="top-buttons">
-    <button class="print-btn" onclick="printPage()">🖨️ Print</button>
-    <button class="share-btn" onclick="shareOnWhatsApp()">📤 Share via WhatsApp</button>
+  <div class="sidebar">
+    <button onclick="location.href='{{ url_for('add_product') }}'">Bidhaa</button>
+    <button onclick="location.href='{{ url_for('information') }}'">Information</button>
+    <button class="restricted-btn" onclick="location.href='{{ url_for('restricted') }}'">Restricted</button>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Jina la Bidhaa</th>
-        <th>Thamani (Tsh)</th>
-        <th>Idadi</th>
-        <th>Aliyeongeza</th>
-        <th>Muda</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for product in products %}
-      <tr>
-        <td>{{ product.jina }}</td>
-        <td>{{ product.thamani }}</td>
-        <td>{{ product.idadi }}</td>
-        <td>{{ product.added_by }}</td>
-        <td>{{ product.added_at }}</td>
-      </tr>
-      {% endfor %}
-      <tr class="total-row">
-        <td colspan="5" style="text-align: right;">TOTAL: TSH {{ total_thamani }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="main-content">
+    <h2>Taarifa za Bidhaa (Information)</h2>
 
-  <!-- Safely embedded product data for JavaScript -->
-  <script type="application/json" id="products-data">
-    {{ products | tojson }}
-  </script>
+    <div class="top-buttons">
+      <button class="print-btn" onclick="printPage()">🖨️ Print</button>
+      <button class="share-btn" onclick="shareOnWhatsApp()">📤 Share via WhatsApp</button>
+    </div>
 
+    <table>
+      <thead>
+        <tr>
+          <th>Jina la Bidhaa</th>
+          <th>Thamani (Tsh)</th>
+          <th>Idadi</th>
+          <th>Aliyeongeza</th>
+          <th>Muda</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td>{{ product.jina }}</td>
+          <td>{{ product.thamani }}</td>
+          <td>{{ product.idadi }}</td>
+          <td>{{ product.added_by }}</td>
+          <td>{{ product.added_at }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total-row">
+          <td colspan="5" style="text-align: right;">TOTAL: TSH {{ total_thamani }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Safely embedded product data for JavaScript -->
+    <script type="application/json" id="products-data">
+      {{ products | tojson }}
+    </script>
+
+  </div>
 </body>
 </html>
