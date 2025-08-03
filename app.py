@@ -58,15 +58,20 @@ def page2():
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT jina, action, timestamp FROM activities ORDER BY timestamp DESC")
+        cursor.execute("""
+            SELECT jina, action, timestamp 
+            FROM activities 
+            ORDER BY timestamp DESC
+        """)
         rows = cursor.fetchall()
 
-        activities = [{
-            'jina': r[0],
-            'action': r[1],
-            'timestamp': r[2].strftime("%Y-%m-%d %H:%M:%S")
-        } for r in rows]
-
+        activities = [ 
+            {
+                'jina': r[0],
+                'action': r[1],
+                'timestamp': r[2].strftime("%Y-%m-%d %H:%M:%S")
+            } for r in rows
+        ]
         return render_template('page2.html', activities=activities)
 
     except Exception as e:
@@ -108,7 +113,7 @@ def add_product():
                 cursor.close()
                 conn.close()
 
-    # Fetch all products after insertion
+    # Fetch all products - always sorted with newest first
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -119,13 +124,15 @@ def add_product():
         """)
         rows = cursor.fetchall()
 
-        products = [{
-            'jina': r[0],
-            'thamani': r[1],
-            'idadi': r[2],
-            'added_by': r[3],
-            'added_at': r[4].strftime("%Y-%m-%d %H:%M:%S")
-        } for r in rows]
+        products = [
+            {
+                'jina': r[0],
+                'thamani': r[1],
+                'idadi': r[2],
+                'added_by': r[3],
+                'added_at': r[4].strftime("%Y-%m-%d %H:%M:%S")
+            } for r in rows
+        ]
 
     except Exception as e:
         error = f"Kosa wakati wa kupakua bidhaa: {e}"
@@ -152,13 +159,15 @@ def information():
         """)
         rows = cursor.fetchall()
 
-        products = [{
-            'jina': r[0],
-            'thamani': r[1],
-            'idadi': r[2],
-            'added_by': r[3],
-            'added_at': r[4].strftime("%Y-%m-%d %H:%M:%S")
-        } for r in rows]
+        products = [
+            {
+                'jina': r[0],
+                'thamani': r[1],
+                'idadi': r[2],
+                'added_by': r[3],
+                'added_at': r[4].strftime("%Y-%m-%d %H:%M:%S")
+            } for r in rows
+        ]
 
         cursor.execute("SELECT SUM(thamani) FROM products")
         total = cursor.fetchone()[0]
@@ -187,7 +196,10 @@ def logout():
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO activities (jina, action, timestamp) VALUES (%s, %s, %s)", (jina, 'logout', datetime.now()))
+            cursor.execute("""
+                INSERT INTO activities (jina, action, timestamp) 
+                VALUES (%s, %s, %s)
+            """, (jina, 'logout', datetime.now()))
             conn.commit()
         except:
             pass
