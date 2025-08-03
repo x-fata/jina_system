@@ -32,10 +32,10 @@ def login():
             if admin and check_password_hash(admin[2], password):
                 session['admin'] = jina
                 login_time = datetime.now()
-                cursor.execute(
-                    "INSERT INTO activities (jina, action, timestamp) VALUES (%s, %s, %s)",
-                    (jina, 'login', login_time)
-                )
+                cursor.execute("""
+                    INSERT INTO activities (jina, action, timestamp) 
+                    VALUES (%s, %s, %s)
+                """, (jina, 'login', login_time))
                 conn.commit()
                 return redirect('/page2')
             else:
@@ -113,7 +113,7 @@ def add_product():
                 cursor.close()
                 conn.close()
 
-    # Fetch all products - always sorted with newest first
+    # Fetch all products - newest first
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
