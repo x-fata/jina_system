@@ -8,19 +8,17 @@ app.secret_key = 'bizkazi_secret_key'
 
 # === DATABASE CONNECTION ===
 def get_db_connection():
-    conn = psycopg2.connect(
+    return psycopg2.connect(
         host="dpg-d265eimuk2gs73bhvjcg-a.oregon-postgres.render.com",
         port=5432,
         database="jina_db",
         user="jina_db_user",
         password="295a2tHLmhTeHFjTI4AxznPHmRMKJptc"
     )
-    return conn
 
 # === LOGIN ROUTE ===
 @app.route('/', methods=['GET', 'POST'])
 def login():
-    error = None
     if request.method == 'POST':
         jina = request.form['jina']
         password = request.form['password']
@@ -28,7 +26,6 @@ def login():
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-
             cursor.execute("SELECT * FROM admins WHERE jina = %s", (jina,))
             admin = cursor.fetchone()
 
@@ -42,18 +39,17 @@ def login():
                 conn.commit()
                 return redirect('/page2')
             else:
-                error = 'Jina au Password si sahihi.'
+                return render_template('login.html', error='Jina au Password si sahihi.')
 
         except Exception as e:
-            error = f"Kuna tatizo: {e}"
-
+            return render_template('login.html', error=f"Kuna tatizo: {e}")
         finally:
             cursor.close()
             conn.close()
 
-    return render_template('login.html', error=error)
+    return render_template('login.html')
 
-# === PAGE 2 ROUTE ===
+# === PAGE 2: ACTIVITIES VIEW ===
 @app.route('/page2')
 def page2():
     if 'admin' not in session:
@@ -65,22 +61,19 @@ def page2():
         cursor.execute("SELECT jina, action, timestamp FROM activities ORDER BY timestamp DESC")
         rows = cursor.fetchall()
 
-        activities = []
-        for row in rows:
-            activities.append({
-                'jina': row[0],
-                'action': row[1],
-                'timestamp': row[2].strftime("%Y-%m-%d %H:%M:%S"),
-            })
+        activities = [{
+            'jina': r[0],
+            'action': r[1],
+            'timestamp': r[2].strftime("%Y-%m-%d %H:%M:%S")
+        } for r in rows]
+
+        return render_template('page2.html', activities=activities)
 
     except Exception as e:
         return f"Kuna tatizo: {e}"
-
     finally:
         cursor.close()
         conn.close()
-
-    return render_template('page2.html', activities=activities)
 
 # === ADD PRODUCT ROUTE ===
 @app.route('/add-product', methods=['GET', 'POST'])
@@ -88,9 +81,7 @@ def add_product():
     if 'admin' not in session:
         return redirect('/')
 
-    error = None
-    success = None
-    products = []
+    error, success = None, None
 
     if request.method == 'POST':
         jina = request.form.get('jina')
@@ -103,15 +94,12 @@ def add_product():
             error = "Tafadhali jaza fomu yote ipasavyo."
         else:
             try:
-                thamani_float = float(thamani)
-                idadi_int = int(idadi)
-
                 conn = get_db_connection()
                 cursor = conn.cursor()
                 cursor.execute("""
                     INSERT INTO products (jina, thamani, idadi, added_by, added_at)
                     VALUES (%s, %s, %s, %s, %s)
-                """, (jina, thamani_float, idadi_int, added_by, added_at))
+                """, (jina, float(thamani), int(idadi), added_by, added_at))
                 conn.commit()
                 success = "Bidhaa imeongezwa kikamilifu."
             except Exception as e:
@@ -120,7 +108,7 @@ def add_product():
                 cursor.close()
                 conn.close()
 
-    # Fetch products - NEWEST FIRST
+    # Fetch all products after insertion
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -131,16 +119,17 @@ def add_product():
         """)
         rows = cursor.fetchall()
 
-        for row in rows:
-            products.append({
-                'jina': row[0],
-                'thamani': row[1],
-                'idadi': row[2],
-                'added_by': row[3],
-                'added_at': row[4].strftime("%Y-%m-%d %H:%M:%S")
-            })
+        products = [{
+            'jina': r[0],
+            'thamani': r[1],
+            'idadi': r[2],
+            'added_by': r[3],
+            'added_at': r[4].strftime("%Y-%m-%d %H:%M:%S")
+        } for r in rows]
+
     except Exception as e:
         error = f"Kosa wakati wa kupakua bidhaa: {e}"
+        products = []
     finally:
         cursor.close()
         conn.close()
@@ -153,14 +142,9 @@ def information():
     if 'admin' not in session:
         return redirect('/')
 
-    error = None
-    products = []
-    total_thamani = 0.0
-
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-
         cursor.execute("""
             SELECT jina, thamani, idadi, added_by, added_at
             FROM products
@@ -168,33 +152,50 @@ def information():
         """)
         rows = cursor.fetchall()
 
-        for row in rows:
-            products.append({
-                'jina': row[0],
-                'thamani': row[1],
-                'idadi': row[2],
-                'added_by': row[3],
-                'added_at': row[4].strftime("%Y-%m-%d %H:%M:%S")
-            })
+        products = [{
+            'jina': r[0],
+            'thamani': r[1],
+            'idadi': r[2],
+            'added_by': r[3],
+            'added_at': r[4].strftime("%Y-%m-%d %H:%M:%S")
+        } for r in rows]
 
         cursor.execute("SELECT SUM(thamani) FROM products")
-        result = cursor.fetchone()
-        total_thamani = result[0] if result[0] else 0.0
+        total = cursor.fetchone()[0]
+        total_thamani = total if total else 0.0
+
+        return render_template('information.html', products=products, total_thamani=total_thamani)
 
     except Exception as e:
-        error = f"Kosa: {e}"
+        return render_template('information.html', products=[], total_thamani=0, error=f"Kosa: {e}")
     finally:
         cursor.close()
         conn.close()
 
-    return render_template('information.html', products=products, total_thamani=total_thamani, error=error)
-
-# === RESTRICTED ROUTE ===
+# === RESTRICTED PAGE ===
 @app.route('/restricted')
 def restricted():
     if 'admin' not in session:
         return redirect('/')
     return render_template('restricted.html')
+
+# === LOGOUT ===
+@app.route('/logout')
+def logout():
+    if 'admin' in session:
+        jina = session['admin']
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO activities (jina, action, timestamp) VALUES (%s, %s, %s)", (jina, 'logout', datetime.now()))
+            conn.commit()
+        except:
+            pass
+        finally:
+            cursor.close()
+            conn.close()
+        session.clear()
+    return redirect('/')
 
 # === RUN APP ===
 if __name__ == '__main__':

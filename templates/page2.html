@@ -136,7 +136,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for activity in activities %}
+        {% for activity in activities|reverse %}  <!-- Reverse order: newest first -->
         <tr>
           <td>{{ activity.jina }}</td>
           <td>{{ activity.action }}</td>

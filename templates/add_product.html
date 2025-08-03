@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sw">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -28,7 +28,6 @@
     }
 
     .sidebar a {
-      display: block;
       text-decoration: none;
       background: white;
       color: #0288d1;
@@ -57,7 +56,7 @@
 
     .container {
       margin-left: 240px;
-      max-width: 900px;
+      max-width: 1000px;
       padding: 30px;
       flex-grow: 1;
     }
@@ -85,7 +84,6 @@
       font-size: 16px;
       border-radius: 6px;
       border: 1.5px solid #ccc;
-      transition: border-color 0.3s ease;
       flex: 1;
     }
 
@@ -121,6 +119,26 @@
       color: white;
     }
 
+    .message {
+      text-align: center;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .error {
+      background-color: #fce4e4;
+      color: #d32f2f;
+      border: 1.5px solid #d32f2f;
+    }
+
+    .success {
+      background-color: #dff0d8;
+      color: #388e3c;
+      border: 1.5px solid #388e3c;
+    }
+
     h3 {
       border-bottom: 2px solid #045a8d;
       padding-bottom: 5px;
@@ -153,29 +171,27 @@
       background-color: #f1f9ff;
     }
 
-    .message {
-      text-align: center;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
 
-    .error {
-      background-color: #fce4e4;
-      color: #d32f2f;
-      border: 1.5px solid #d32f2f;
-    }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-around;
+        position: relative;
+      }
 
-    .success {
-      background-color: #dff0d8;
-      color: #388e3c;
-      border: 1.5px solid #388e3c;
+      .container {
+        margin-left: 0;
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
-
   <div class="sidebar">
     <a href="{{ url_for('add_product') }}">Bidhaa</a>
     <a href="{{ url_for('information') }}">Information</a>
@@ -192,7 +208,7 @@
       <div class="message success" id="msg">{{ success }}</div>
     {% endif %}
 
-    <form method="POST" novalidate>
+    <form method="POST" autocomplete="off" novalidate>
       <div class="form-top">
         <input type="text" name="jina" placeholder="Jina la Bidhaa" required />
         <input type="number" step="0.01" name="thamani" placeholder="Thamani (Tsh)" required />
@@ -229,11 +245,16 @@
   </div>
 
   <script>
+    if (performance.navigation.type === 2) {
+      // If page is loaded from back/forward cache
+      location.reload(true);
+    }
+
     const msg = document.getElementById("msg");
     if (msg) {
       setTimeout(() => {
         window.location.href = window.location.href.split("?")[0];
-      }, 1000); // reload after 1 second
+      }, 1000);
     }
   </script>
 </body>
