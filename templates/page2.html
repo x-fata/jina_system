@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #e0f0f8;
+      background-color: #d3d3d3; /* light gray */
       color: #03396c;
       display: flex;
       min-height: 100vh;
@@ -16,7 +16,7 @@
 
     .sidebar {
       width: 220px;
-      background-color: #045a8d;
+      background-color: #2e2e2e; /* dark gray/blackish */
       padding: 20px;
       display: flex;
       flex-direction: column;
@@ -29,8 +29,8 @@
       background-color: white;
       color: #0288d1;
       border: 2px solid #0288d1;
-      padding: 12px;
-      font-size: 16px;
+      padding: 10px;
+      font-size: 14px;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -39,6 +39,11 @@
 
     .sidebar button:hover {
       background-color: #e0f7ff;
+    }
+
+    .sidebar button.active {
+      background-color: #b0b0b0; /* light gray highlight */
+      color: black;
     }
 
     .sidebar .restricted-btn {
@@ -66,20 +71,21 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border-radius: 10px;
-      overflow: hidden;
+      background-color: transparent; /* No white bg */
+      border: 1px solid #888888; /* gray border */
+      border-radius: 0;
     }
 
     th, td {
       padding: 12px 15px;
       text-align: left;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #888888;
+      background-color: transparent;
+      color: black;
     }
 
     th {
-      background-color: #045a8d;
+      background-color: #444444; /* dark gray */
       color: white;
       position: sticky;
       top: 0;
@@ -87,7 +93,7 @@
     }
 
     tr:hover {
-      background-color: #f1f9ff;
+      background-color: #b0b0b0; /* light gray hover */
     }
 
     @media (max-width: 768px) {
@@ -119,20 +125,20 @@
 <body>
 
   <div class="sidebar">
-    <button onclick="location.href='{{ url_for('add_product') }}'">Bidhaa</button>
+    <button onclick="location.href='{{ url_for('add_product') }}'">Products</button>
     <button onclick="location.href='{{ url_for('information') }}'">Information</button>
     <button class="restricted-btn" onclick="location.href='{{ url_for('restricted') }}'">Restricted</button>
   </div>
 
   <div class="main-content">
-    <h1>Historia ya Matendo ya Admin</h1>
+    <h1>Admin Activity History</h1>
 
     <table>
       <thead>
         <tr>
-          <th>Jina la Admin</th>
-          <th>Kitendo</th>
-          <th>Muda wa Kitendo</th>
+          <th>Admin Name</th>
+          <th>Action</th>
+          <th>Action Time</th>
         </tr>
       </thead>
       <tbody>

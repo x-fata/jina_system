@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ongeza Bidhaa Mpya</title>
+  <title>Add New Product</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #e0f7fa;
+      background-color: #d3d3d3; /* light gray */
       margin: 0;
       padding: 0;
       color: #03396c;
@@ -17,9 +17,9 @@
 
     .sidebar {
       width: 220px;
-      background-color: white;
+      background-color: #2e2e2e; /* dark gray */
       padding: 20px;
-      border-right: 2px solid #b2ebf2;
+      border-right: 2px solid #555555;
       height: 100vh;
       position: fixed;
       display: flex;
@@ -33,10 +33,11 @@
       color: #0288d1;
       font-weight: bold;
       border: 2px solid #0288d1;
-      padding: 12px;
+      padding: 10px;
       text-align: center;
       border-radius: 8px;
       transition: all 0.3s ease;
+      font-size: 14px;
     }
 
     .sidebar a:hover {
@@ -81,7 +82,7 @@
     input[type="text"],
     input[type="number"] {
       padding: 12px 15px;
-      font-size: 16px;
+      font-size: 14px;
       border-radius: 6px;
       border: 1.5px solid #ccc;
       flex: 1;
@@ -106,8 +107,8 @@
       background-color: white;
       color: #0288d1;
       border: 2px solid #0288d1;
-      padding: 14px 30px;
-      font-size: 17px;
+      padding: 10px 25px;
+      font-size: 14px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
@@ -140,27 +141,30 @@
     }
 
     h3 {
-      border-bottom: 2px solid #045a8d;
+      border-bottom: 2px solid #444444;
       padding-bottom: 5px;
       margin-bottom: 15px;
+      color: #222222;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: white;
-      border-radius: 10px;
-      overflow: hidden;
+      background-color: transparent;
+      border: 1px solid #888888;
+      border-radius: 0;
     }
 
     th, td {
       padding: 12px 15px;
       text-align: left;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #888888;
+      background-color: transparent;
+      color: black;
     }
 
     th {
-      background-color: #045a8d;
+      background-color: #444444;
       color: white;
       position: sticky;
       top: 0;
@@ -168,7 +172,7 @@
     }
 
     tr:hover {
-      background-color: #f1f9ff;
+      background-color: #b0b0b0;
     }
 
     @media (max-width: 768px) {
@@ -193,13 +197,13 @@
 </head>
 <body>
   <div class="sidebar">
-    <a href="{{ url_for('add_product') }}">Bidhaa</a>
+    <a href="{{ url_for('add_product') }}">Products</a>
     <a href="{{ url_for('information') }}">Information</a>
     <a href="{{ url_for('restricted') }}" class="restricted-btn">Restricted</a>
   </div>
 
   <div class="container">
-    <h2>Ongeza Bidhaa Mpya</h2>
+    <h2>Add New Product</h2>
 
     {% if error %}
       <div class="message error" id="msg">{{ error }}</div>
@@ -210,24 +214,24 @@
 
     <form method="POST" autocomplete="off" novalidate>
       <div class="form-top">
-        <input type="text" name="jina" placeholder="Jina la Bidhaa" required />
-        <input type="number" step="0.01" name="thamani" placeholder="Thamani (Tsh)" required />
-        <input type="number" name="idadi" placeholder="Idadi" required />
+        <input type="text" name="jina" placeholder="Product Name" required />
+        <input type="number" step="0.01" name="thamani" placeholder="Value (Tsh)" required />
+        <input type="number" name="idadi" placeholder="Quantity" required />
       </div>
       <div class="form-bottom">
-        <button type="submit">Ongeza Bidhaa</button>
+        <button type="submit">Add Product</button>
       </div>
     </form>
 
-    <h3>Bidhaa Zilizoongezwa</h3>
+    <h3>Added Products</h3>
     <table>
       <thead>
         <tr>
-          <th>Jina</th>
-          <th>Thamani</th>
-          <th>Idadi</th>
-          <th>Aliyeongeza</th>
-          <th>Wakati</th>
+          <th>Name</th>
+          <th>Value</th>
+          <th>Quantity</th>
+          <th>Added By</th>
+          <th>Time</th>
         </tr>
       </thead>
       <tbody>
@@ -245,16 +249,11 @@
   </div>
 
   <script>
-    if (performance.navigation.type === 2) {
-      // If page is loaded from back/forward cache
-      location.reload(true);
-    }
-
     const msg = document.getElementById("msg");
     if (msg) {
       setTimeout(() => {
         window.location.href = window.location.href.split("?")[0];
-      }, 1000);
+      }, 3000);
     }
   </script>
 </body>
