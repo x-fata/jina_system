@@ -18,23 +18,21 @@ def get_db_connection():
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        name = request.form['jina']
+        jina = request.form['jina']
         password = request.form['password']
 
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM admins WHERE jina = %s", (name,))
+            cursor.execute("SELECT * FROM admins WHERE jina = %s", (jina,))
             admin = cursor.fetchone()
 
             if admin and check_password_hash(admin[2], password):
-                session['admin'] = name
-                # Clear admin activities once login
-                cursor.execute("DELETE FROM activities WHERE jina = %s", (name,))
-                conn.commit()
+                session['admin'] = jina
                 return redirect('/add-product')
             else:
-                return render_template('login.html', error='Invalid name or password.')
+                return render_template('login.html', error='Wrong username or password.')
+
         except Exception as e:
             return render_template('login.html', error=f"Error: {e}")
         finally:
@@ -50,13 +48,13 @@ def add_product():
     error, success = None, None
 
     if request.method == 'POST':
-        name = request.form.get('jina')
-        price = request.form.get('thamani')
-        quantity = request.form.get('idadi')
+        jina = request.form.get('jina')
+        thamani = request.form.get('thamani')
+        idadi = request.form.get('idadi')
         added_by = session['admin']
-        added_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        added_at = datetime.now()
 
-        if not name or not price or not quantity:
+        if not jina or not thamani or not idadi:
             error = "Please fill in all fields."
         else:
             try:
@@ -65,11 +63,11 @@ def add_product():
                 cursor.execute("""
                     INSERT INTO products (jina, thamani, idadi, added_by, added_at)
                     VALUES (%s, %s, %s, %s, %s)
-                """, (name, float(price), int(quantity), added_by, added_at))
+                """, (jina, float(thamani), int(idadi), added_by, added_at))
                 conn.commit()
                 success = "Product added successfully."
             except Exception as e:
-                error = f"Error occurred: {e}"
+                error = f"Database error: {e}"
             finally:
                 cursor.close()
                 conn.close()
@@ -83,6 +81,7 @@ def add_product():
             ORDER BY added_at DESC
         """)
         rows = cursor.fetchall()
+
         products = [
             {
                 'jina': r[0],
@@ -92,8 +91,9 @@ def add_product():
                 'added_at': r[4].strftime("%Y-%m-%d %H:%M:%S")
             } for r in rows
         ]
+
     except Exception as e:
-        error = f"Error while loading products: {e}"
+        error = f"Error loading products: {e}"
         products = []
     finally:
         cursor.close()
@@ -128,9 +128,10 @@ def information():
 
         cursor.execute("SELECT SUM(thamani) FROM products")
         total = cursor.fetchone()[0]
-        total_value = total if total else 0.0
+        total_thamani = total if total else 0.0
 
-        return render_template('information.html', products=products, total_thamani=total_value)
+        return render_template('information.html', products=products, total_thamani=total_thamani)
+
     except Exception as e:
         return render_template('information.html', products=[], total_thamani=0, error=f"Error: {e}")
     finally:
@@ -145,8 +146,7 @@ def restricted():
 
 @app.route('/logout')
 def logout():
-    if 'admin' in session:
-        session.clear()
+    session.clear()
     return redirect('/')
 
 if __name__ == '__main__':

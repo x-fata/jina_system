@@ -6,191 +6,135 @@
   <title>Add New Product</title>
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       background-color: #d3d3d3; /* light gray */
-      margin: 0;
-      padding: 0;
-      color: #03396c;
-      display: flex;
-      min-height: 100vh;
+      color: #222;
     }
 
     .sidebar {
-      width: 220px;
-      background-color: #2e2e2e; /* dark gray */
-      padding: 20px;
-      border-right: 2px solid #555555;
-      height: 100vh;
-      position: fixed;
+      background-color: #333;
+      color: white;
+      padding: 15px;
       display: flex;
-      flex-direction: column;
-      gap: 20px;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .sidebar a {
-      text-decoration: none;
-      background: white;
-      color: #0288d1;
-      font-weight: bold;
-      border: 2px solid #0288d1;
-      padding: 10px;
-      text-align: center;
+      background-color: white;
+      color: black;
+      padding: 8px 14px;
       border-radius: 8px;
-      transition: all 0.3s ease;
-      font-size: 14px;
+      font-size: 13px;
+      border: 1px solid #ccc;
+      text-decoration: none;
+      transition: all 0.3s;
     }
 
     .sidebar a:hover {
-      background-color: #0288d1;
+      background-color: #999;
       color: white;
     }
 
-    .sidebar .restricted-btn {
-      background-color: #ffebee;
-      color: #d32f2f;
-      border: 2px solid #d32f2f;
-    }
-
-    .sidebar .restricted-btn:hover {
-      background-color: #ffcdd2;
-    }
-
     .container {
-      margin-left: 240px;
+      padding: 20px;
       max-width: 1000px;
-      padding: 30px;
-      flex-grow: 1;
+      margin: auto;
     }
 
     h2 {
-      color: #045a8d;
-      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .message {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .error {
+      background-color: #ffe6e6;
+      color: #cc0000;
+    }
+
+    .success {
+      background-color: #e6ffe6;
+      color: #2e7d32;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 15px;
-    }
-
-    .form-top {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     input[type="text"],
     input[type="number"] {
-      padding: 12px 15px;
+      padding: 10px;
       font-size: 14px;
+      border: 1px solid #ccc;
       border-radius: 6px;
-      border: 1.5px solid #ccc;
-      flex: 1;
-    }
-
-    input[name="jina"] {
-      flex: 2;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #0288d1;
-      box-shadow: 0 0 8px rgba(2, 136, 209, 0.4);
-    }
-
-    .form-bottom {
-      display: flex;
-      justify-content: flex-end;
     }
 
     button {
-      background-color: white;
-      color: #0288d1;
-      border: 2px solid #0288d1;
-      padding: 10px 25px;
+      padding: 10px;
       font-size: 14px;
-      border-radius: 8px;
+      background-color: white;
+      color: black;
+      border: 1px solid #333;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s ease;
+      transition: all 0.3s;
     }
 
     button:hover {
-      background-color: #0288d1;
+      background-color: #999;
       color: white;
-    }
-
-    .message {
-      text-align: center;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .error {
-      background-color: #fce4e4;
-      color: #d32f2f;
-      border: 1.5px solid #d32f2f;
-    }
-
-    .success {
-      background-color: #dff0d8;
-      color: #388e3c;
-      border: 1.5px solid #388e3c;
-    }
-
-    h3 {
-      border-bottom: 2px solid #444444;
-      padding-bottom: 5px;
-      margin-bottom: 15px;
-      color: #222222;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: transparent;
-      border: 1px solid #888888;
-      border-radius: 0;
+      background-color: white;
+      margin-top: 15px;
     }
 
     th, td {
-      padding: 12px 15px;
+      padding: 10px;
       text-align: left;
-      border-bottom: 1px solid #888888;
-      background-color: transparent;
-      color: black;
+      border-bottom: 1px solid #ccc;
+      font-size: 14px;
     }
 
     th {
-      background-color: #444444;
+      background-color: #444;
       color: white;
-      position: sticky;
-      top: 0;
-      z-index: 1;
     }
 
     tr:hover {
-      background-color: #b0b0b0;
+      background-color: #f1f1f1;
     }
 
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
-
+    @media (max-width: 600px) {
       .sidebar {
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-        justify-content: space-around;
-        position: relative;
+        flex-direction: column;
+        align-items: center;
       }
 
-      .container {
-        margin-left: 0;
-        padding: 20px;
+      table {
+        font-size: 13px;
+      }
+
+      form {
+        gap: 8px;
+      }
+
+      input, button {
+        font-size: 13px;
       }
     }
   </style>
@@ -199,7 +143,7 @@
   <div class="sidebar">
     <a href="{{ url_for('add_product') }}">Products</a>
     <a href="{{ url_for('information') }}">Information</a>
-    <a href="{{ url_for('restricted') }}" class="restricted-btn">Restricted</a>
+    <a href="{{ url_for('restricted') }}">Restricted</a>
   </div>
 
   <div class="container">
@@ -213,47 +157,44 @@
     {% endif %}
 
     <form method="POST" autocomplete="off" novalidate>
-      <div class="form-top">
-        <input type="text" name="jina" placeholder="Product Name" required />
-        <input type="number" step="0.01" name="thamani" placeholder="Value (Tsh)" required />
-        <input type="number" name="idadi" placeholder="Quantity" required />
-      </div>
-      <div class="form-bottom">
-        <button type="submit">Add Product</button>
-      </div>
+      <input type="text" name="jina" placeholder="Product Name (e.g. Mchele)" required />
+      <input type="number" step="0.01" name="thamani" placeholder="Value (Tsh)" required />
+      <input type="number" name="idadi" placeholder="Quantity" required />
+      <button type="submit">Submit Product</button>
     </form>
 
-    <h3>Added Products</h3>
+    <h3>Recently Added Products</h3>
     <table>
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Value</th>
-          <th>Quantity</th>
+          <th>Jina</th>
+          <th>Thamani</th>
+          <th>Idadi</th>
           <th>Added By</th>
-          <th>Time</th>
+          <th>Added At</th>
         </tr>
       </thead>
       <tbody>
         {% for product in products %}
-          <tr>
-            <td>{{ product.jina }}</td>
-            <td>{{ product.thamani }}</td>
-            <td>{{ product.idadi }}</td>
-            <td>{{ product.added_by }}</td>
-            <td>{{ product.added_at }}</td>
-          </tr>
+        <tr>
+          <td>{{ product.jina }}</td>
+          <td>{{ product.thamani }}</td>
+          <td>{{ product.idadi }}</td>
+          <td>{{ product.added_by }}</td>
+          <td>{{ product.added_at }}</td>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 
   <script>
+    // If a message exists, auto-refresh after 2 seconds
     const msg = document.getElementById("msg");
     if (msg) {
       setTimeout(() => {
         window.location.href = window.location.href.split("?")[0];
-      }, 3000);
+      }, 2000);
     }
   </script>
 </body>

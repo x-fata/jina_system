@@ -8,151 +8,126 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #d3d3d3; /* light gray */
-      color: #03396c;
-      display: flex;
-      min-height: 100vh;
+      background-color: #f0f0f0;
+      color: #111;
     }
 
     .sidebar {
-      width: 220px;
-      background-color: #2e2e2e; /* dark gray */
-      padding: 20px;
+      background-color: #222;
+      padding: 15px;
       display: flex;
-      flex-direction: column;
-      gap: 20px;
-      position: fixed;
-      height: 100vh;
+      justify-content: space-around;
+      flex-wrap: wrap;
     }
 
-    .sidebar button {
-      background-color: white;
-      color: #0288d1;
-      border: 2px solid #0288d1;
-      padding: 10px;
-      font-size: 14px;
+    .sidebar a {
+      text-decoration: none;
+      color: #111;
+      background-color: #fff;
+      border: 2px solid #444;
+      padding: 8px 12px;
+      margin: 5px;
+      font-size: 13px;
       border-radius: 8px;
-      cursor: pointer;
       transition: all 0.3s ease;
-      text-align: center;
     }
 
-    .sidebar button:hover {
-      background-color: #e0f7ff;
+    .sidebar a:hover {
+      background-color: #ccc;
+      color: black;
     }
 
-    .sidebar .restricted-btn {
-      background-color: #ffebee;
-      color: #d32f2f;
-      border: 2px solid #d32f2f;
-    }
-
-    .sidebar .restricted-btn:hover {
-      background-color: #ffcdd2;
-    }
-
-    .main-content {
-      margin-left: 240px;
-      padding: 25px;
-      overflow-x: auto;
-      flex-grow: 1;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-      font-size: 24px;
+    .container {
+      padding: 20px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: transparent;
-      border: 1px solid #888888;
-      border-radius: 0;
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     th, td {
-      padding: 12px 15px;
+      padding: 10px;
       text-align: left;
-      border-bottom: 1px solid #888888;
-      background-color: transparent;
-      color: black;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
     }
 
     th {
-      background-color: #444444;
+      background-color: #444;
       color: white;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    tr:hover {
-      background-color: #b0b0b0;
     }
 
     .total {
-      margin-top: 15px;
       font-weight: bold;
-      font-size: 18px;
-      color: #222222;
+      margin-top: 20px;
+      font-size: 15px;
+      color: #222;
     }
 
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
+    .btn-share {
+      margin-top: 10px;
+      background-color: #25D366;
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      font-size: 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
 
-      .sidebar {
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-        justify-content: space-around;
-        position: relative;
-      }
-
-      .main-content {
-        margin-left: 0;
-        padding: 10px;
-      }
+    .btn-share:hover {
+      background-color: #128C7E;
     }
   </style>
 </head>
 <body>
 
   <div class="sidebar">
-    <button onclick="location.href='{{ url_for('add_product') }}'">Products</button>
-    <button class="active" onclick="location.href='{{ url_for('information') }}'">Information</button>
-    <button class="restricted-btn" onclick="location.href='{{ url_for('restricted') }}'">Restricted</button>
+    <a href="{{ url_for('add_product') }}">Add Product</a>
+    <a href="{{ url_for('information') }}">Information</a>
+    <a href="{{ url_for('restricted') }}">Restricted</a>
   </div>
 
-  <div class="main-content">
-    <h1>Product Information</h1>
+  <div class="container">
+    <h2>Product Summary</h2>
 
     <table>
       <thead>
         <tr>
           <th>Name</th>
-          <th>Value</th>
+          <th>Value (Tsh)</th>
           <th>Quantity</th>
           <th>Added By</th>
-          <th>Added At</th>
+          <th>Time</th>
         </tr>
       </thead>
       <tbody>
         {% for product in products %}
-          <tr>
-            <td>{{ product.jina }}</td>
-            <td>{{ product.thamani }}</td>
-            <td>{{ product.idadi }}</td>
-            <td>{{ product.added_by }}</td>
-            <td>{{ product.added_at }}</td>
-          </tr>
+        <tr>
+          <td>{{ product.jina }}</td>
+          <td>{{ product.thamani }}</td>
+          <td>{{ product.idadi }}</td>
+          <td>{{ product.added_by }}</td>
+          <td>{{ product.added_at }}</td>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
 
-    <div class="total">Total Value: Tsh {{ total_thamani }}</div>
+    <div class="total">
+      Total Value: {{ total_thamani }} Tsh
+    </div>
+
+    <a class="btn-share" target="_blank" href="https://wa.me/255772940495?text=Hello%2C%20please%20check%20this%20summary%20info%20on%20BizKazi%20system.">
+      Share Info via WhatsApp
+    </a>
   </div>
 
 </body>
